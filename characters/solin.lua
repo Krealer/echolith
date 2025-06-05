@@ -1,34 +1,29 @@
-local solin = {
-    x = 5,
-    y = 5,
-    interacted = false
-}
-
--- These go AFTER solin is defined
 local dialogueState = require("dialogue_state")
 local dialogueTree = require("data.solin_dialogue_tree")
 
-function solin.interact(playerX, playerY)
-    -- Only activate if dialogue is not already open
-    if dialogueState.active then return end
+local solin = {
+    x = 15,
+    y = 5,
+    hidden = false
+}
 
-    -- Check if player is adjacent
+function solin.interact(playerX, playerY)
+    if solin.hidden then return end
+
     local dx = math.abs(solin.x - playerX)
     local dy = math.abs(solin.y - playerY)
     local adjacent = dx + dy == 1
 
-    if adjacent then
+    if adjacent and not dialogueState.active then
         dialogueState.start(dialogueTree)
     end
 end
 
 function solin.draw()
-    local px = solin.x * 32 + 16
-    local py = solin.y * 32 + 16
+    if solin.hidden then return end
 
-    love.graphics.setColor(1, 0.9, 0.6)  -- Pale gold
-    love.graphics.circle("fill", px, py, 14)
+    love.graphics.setColor(1, 0.8, 0) -- Gold/candlelight tone
+    love.graphics.circle("fill", (solin.x - 1) * 32 + 16, (solin.y - 1) * 32 + 16, 10)
 end
-
 
 return solin
